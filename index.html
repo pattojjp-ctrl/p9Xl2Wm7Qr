@@ -291,6 +291,9 @@
         <div class="hs-value" id="todayCount">0</div>
       </div>
     </div>
+        <button class="delete-history-btn" id="deleteHistoryBtn">
+      🗑️ ล้างประวัติ
+    </button>
     <div id="historyList"></div>
   </section>
 
@@ -659,6 +662,27 @@ function showToast(msg){
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
 }
+  
+  document.getElementById('deleteHistoryBtn').addEventListener('click', async () => {
+
+  if(state.history.length === 0){
+    showToast('📖 ยังไม่มีประวัติให้ลบ');
+    return;
+  }
+
+  const ok = confirm('🗑️ ต้องการล้างประวัติทั้งหมดไหม?');
+
+  if(!ok) return;
+
+  state.history = [];
+
+  await saveState();
+
+  renderHistory();
+
+  showToast('✅ ล้างประวัติแล้ว');
+});
+
 
 /* ---------------- Tabs ---------------- */
 document.querySelectorAll('.tab-btn').forEach(btn => {
