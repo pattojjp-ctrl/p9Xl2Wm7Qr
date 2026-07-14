@@ -352,11 +352,11 @@ const STORAGE_KEY = 'podb-app-state-v1';
 
 async function loadState(){
   try{
-    const res = await window.storage.get(STORAGE_KEY, false);
-    if(res && res.value){
-      const loaded = JSON.parse(res.value);
-      state = Object.assign(state, loaded);
-    }
+    const saved = localStorage.getItem(STORAGE_KEY);
+if(saved){
+  const loaded = JSON.parse(saved);
+  state = Object.assign(state, loaded);
+}
   }catch(e){
     // no saved state yet, use defaults
   }
@@ -372,7 +372,7 @@ async function loadState(){
 let saving = false;
 async function saveState(){
   try{
-    await window.storage.set(STORAGE_KEY, JSON.stringify(state), false);
+localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }catch(e){
     showToast('⚠️ บันทึกไม่สำเร็จ ลองใหม่อีกครั้ง');
   }
