@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>ปากหม้อตลาดแลงบ้านดุง</title>
+
+<!-- iOS "Add to Home Screen" support -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ปากหม้อ บ้านดุง">
+<meta name="theme-color" content="#E3502A">
+<link rel="apple-touch-icon" href="data:image/png;base64,__ICON_B64__">
+<link rel="icon" href="data:image/png;base64,__ICON_B64__">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --cream:#FBF3E7;
+    --paper:#FFFDF8;
+    --ink:#2E2013;
+    --ink-soft:#6B5A48;
+    --chili:#E3502A;
+    --chili-dark:#C23F1E;
+    --turmeric:#F2A93B;
+    --turmeric-dark:#D9910F;
+    --herb:#4C7A3B;
+    --herb-dark:#3B5F2C;
+    --pig-pink:#F6B8B0;
+    --pig-pink-dark:#E99B90;
+    --line: rgba(46,32,19,0.12);
+    --shadow: 0 6px 16px rgba(46,32,19,0.14);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+  html,body{margin:0; padding:0; background:var(--cream); color:var(--ink); font-family:'Sarabun',sans-serif; -webkit-font-smoothing:antialiased;}
+  body{ padding-bottom: calc(48px + env(safe-area-inset-bottom)); }
+  h1,h2,h3, .display{ font-family:'Kanit',sans-serif; }
+
+  ::selection{ background: var(--turmeric); color: var(--ink); }
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky; top:0; z-index:20;
+    background: var(--chili);
+    color:#fff;
+    padding: max(40px, calc(12px + env(safe-area-inset-top))) 16px 14px;
+    box-shadow: var(--shadow);
+  }
+  .header-row{ display:flex; align-items:center; gap:12px; }
+  .pig-badge{ width:48px; height:48px; flex:none; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.25)); }
+  .shop-name{ font-family:'Kanit'; font-weight:800; font-size:19px; line-height:1.15; margin:0;}
+  .shop-sub{ font-size:12px; opacity:0.9; margin:2px 0 0; }
+  .mascot-line{ font-size:12.5px; margin-top:8px; background: rgba(255,255,255,0.16); border-radius:10px; padding:6px 10px; display:flex; align-items:center; gap:6px;}
+
+  .tabs{ display:flex; gap:6px; margin-top:12px; }
+  .tab-btn{
+    flex:1; border:none; padding:9px 4px; border-radius:999px; font-family:'Kanit'; font-weight:600; font-size:13.5px;
+    background: rgba(255,255,255,0.18); color:#fff; cursor:pointer;
+  }
+  .tab-btn.active{ background:#fff; color:var(--chili-dark); }
+
+  main{ max-width:560px; margin:0 auto; padding: 14px 12px 0; }
+
+  /* ---------- Section titles ---------- */
+  .section-title{ font-family:'Kanit'; font-weight:700; font-size:15px; color: var(--chili-dark); margin: 18px 4px 8px; display:flex; align-items:center; gap:6px;}
+  .section-title .count-pill{ background:var(--turmeric); color:var(--ink); font-size:11.5px; font-family:'Sarabun'; font-weight:700; padding:1px 8px; border-radius:999px;}
+
+  /* ---------- Menu grid ---------- */
+  .menu-grid{ display:grid; grid-template-columns: repeat(2, 1fr); gap:9px; }
+  .menu-card{
+    position:relative; text-align:left; border:none; border-radius:16px; padding:12px 10px 10px;
+    background: var(--paper); box-shadow: var(--shadow); cursor:pointer; overflow:hidden;
+    display:flex; flex-direction:column; gap:4px; min-height:74px;
+  }
+  .menu-card.main{ background: linear-gradient(135deg, var(--pig-pink), var(--pig-pink-dark)); grid-column: span 2; flex-direction:row; align-items:center; justify-content:space-between; }
+  .menu-card.off{ opacity:0.4; filter:grayscale(0.5); cursor:not-allowed; }
+  .menu-card .emoji{ font-size:22px; }
+  .menu-card .m-name{ font-family:'Kanit'; font-weight:600; font-size:14px; color:var(--ink); }
+  .menu-card .m-price{ font-size:12.5px; color:var(--ink-soft); font-weight:600;}
+  .menu-card.main .m-name{ font-size:17px; }
+  .menu-card.main .m-price{ color:#7A3B33; }
+  .sold-out-tag{ position:absolute; top:8px; right:8px; background:var(--ink); color:#fff; font-size:10px; padding:2px 7px; border-radius:999px; font-family:'Kanit'; }
+
+  .qty-row{ display:flex; align-items:center; gap:8px; margin-top:2px; }
+  .qty-btn{
+    width:32px; height:32px; border-radius:10px; border:none; font-size:18px; font-family:'Kanit'; font-weight:700;
+    background: var(--chili); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  }
+  .qty-btn.minus{ background: #E9DFCF; color:var(--ink); }
+  .qty-num{ font-family:'Kanit'; font-weight:700; font-size:17px; min-width:22px; text-align:center; }
+  .menu-card.main .qty-btn{ width:38px; height:38px; font-size:20px; }
+  .menu-card.main .qty-num{ font-size:20px; }
+
+  /* ---------- Draft ticket ---------- */
+  .draft-wrap{ margin-top:16px; }
+  .ticket{
+    background: var(--paper); border-radius:16px; box-shadow: var(--shadow); position:relative; padding:14px 14px 12px;
+  }
+  .ticket::before, .ticket::after{
+    content:""; position:absolute; width:16px; height:16px; background:var(--cream); border-radius:50%;
+    top:-8px;
+  }
+  .ticket::before{ left:14px; } .ticket::after{ right:14px; }
+  .ticket .tear{
+    border-top: 2px dashed var(--line); margin: 10px 0; position:relative;
+  }
+  .note-input{
+    width:100%; border:1.5px solid var(--line); border-radius:10px; padding:9px 11px; font-family:'Sarabun'; font-size:14px;
+    background:#fff; color:var(--ink);
+  }
+  .note-input:focus{ outline:2px solid var(--turmeric); border-color:var(--turmeric); }
+  .draft-empty{ color:var(--ink-soft); font-size:13.5px; text-align:center; padding: 10px 0 4px; }
+  .draft-line{ display:flex; justify-content:space-between; align-items:center; font-size:13.5px; padding:3px 0; }
+  .draft-line .dl-name{ display:flex; align-items:center; gap:6px; }
+  .addon-tag{ font-size:10.5px; background: var(--turmeric); color:var(--ink); padding:1px 6px; border-radius:999px; font-family:'Kanit'; font-weight:600;}
+  .draft-total{ display:flex; justify-content:space-between; align-items:baseline; margin-top:8px; }
+  .draft-total .lbl{ font-family:'Kanit'; font-weight:600; font-size:14px; }
+  .draft-total .amt{ font-family:'Kanit'; font-weight:800; font-size:24px; color:var(--chili-dark); }
+  .confirm-btn{
+    width:100%; margin-top:10px; padding:13px; border:none; border-radius:12px; background: var(--herb); color:#fff;
+    font-family:'Kanit'; font-weight:700; font-size:15.5px; cursor:pointer; box-shadow: 0 4px 10px rgba(76,122,59,0.35);
+  }
+  .confirm-btn:disabled{ background:#D8CFC0; color:#8c8070; box-shadow:none; cursor:not-allowed; }
+
+  /* ---------- Queue list ---------- */
+  .empty-state{ text-align:center; padding: 30px 10px; color: var(--ink-soft); }
+  .empty-state .big-emoji{ font-size:38px; display:block; margin-bottom:6px; }
+
+  .queue-card{
+    background: var(--paper); border-radius:14px; box-shadow: var(--shadow); padding: 12px 13px; margin-bottom:10px;
+    border-left: 6px solid var(--chili);
+  }
+  .queue-card.paid{ border-left-color: var(--herb); }
+  .qc-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+  .qc-num{ font-family:'Kanit'; font-weight:800; font-size:20px; color:var(--chili-dark); }
+  .qc-note{ font-size:12.5px; color:var(--ink-soft); margin-top:1px; }
+  .qc-items{ margin: 8px 0; }
+  .qc-item{ font-size:13.5px; display:flex; align-items:center; gap:6px; padding:2px 0; }
+  .qc-item.addon{ background: rgba(242,169,59,0.15); border-radius:8px; padding:4px 7px; margin:3px 0; }
+  .qc-item .basket{ font-size:12px; }
+  .qc-bottom{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:8px; flex-wrap:wrap; }
+  .qc-total{ font-family:'Kanit'; font-weight:800; font-size:18px; }
+  .pay-chip{
+    border:none; border-radius:999px; padding:7px 13px; font-family:'Kanit'; font-weight:700; font-size:12.5px; cursor:pointer;
+  }
+  .pay-chip.unpaid{ background:#FDEDE8; color:var(--chili-dark); border:1.5px solid var(--chili); }
+  .pay-chip.paid{ background: var(--herb); color:#fff; }
+  .done-btn{
+    border:none; border-radius:999px; padding:7px 14px; font-family:'Kanit'; font-weight:700; font-size:12.5px; cursor:pointer;
+    background: var(--ink); color:#fff;
+  }
+
+  /* ---------- History ---------- */
+  .history-summary{ background: var(--paper); border-radius:14px; box-shadow:var(--shadow); padding:14px; display:flex; justify-content:space-between; margin-bottom:12px;}
+  .hs-block .hs-label{ font-size:11.5px; color:var(--ink-soft); }
+  .hs-block .hs-value{ font-family:'Kanit'; font-weight:800; font-size:20px; color:var(--chili-dark); }
+  .hist-date-header{ font-family:'Kanit'; font-weight:700; font-size:13px; color:var(--ink-soft); margin:14px 4px 6px; }
+  .hist-card{ background: var(--paper); border-radius:12px; box-shadow: var(--shadow); padding:10px 12px; margin-bottom:8px; opacity:0.92; }
+  .hist-top{ display:flex; justify-content:space-between; font-size:13px; }
+  .hist-num{ font-family:'Kanit'; font-weight:700; }
+  .hist-items{ font-size:12px; color:var(--ink-soft); margin-top:3px; }
+
+  /* ---------- Settings ---------- */
+  .settings-card{ background:var(--paper); border-radius:14px; box-shadow:var(--shadow); padding:6px 14px; }
+  .settings-row{ display:flex; justify-content:space-between; align-items:center; padding:11px 0; border-bottom:1px solid var(--line); }
+  .settings-row:last-child{ border-bottom:none; }
+  .sr-name{ font-size:14px; font-weight:600; }
+  .sr-price{ font-size:12px; color:var(--ink-soft); }
+  .switch{ position:relative; width:46px; height:26px; }
+  .switch input{ opacity:0; width:0; height:0; }
+  .slider{ position:absolute; cursor:pointer; inset:0; background:#D8CFC0; border-radius:999px; transition:0.2s; }
+  .slider:before{ content:""; position:absolute; height:20px; width:20px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:0.2s; }
+  .switch input:checked + .slider{ background: var(--herb); }
+  .switch input:checked + .slider:before{ transform: translateX(20px); }
+
+  .toast{
+    position:fixed; left:50%; bottom:22px; transform: translateX(-50%) translateY(20px); opacity:0;
+    background: var(--ink); color:#fff; padding:10px 18px; border-radius:999px; font-family:'Kanit'; font-weight:600; font-size:13.5px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25); transition: all 0.25s ease; z-index:50; pointer-events:none;
+  }
+  .toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
+
+  .footnote{ text-align:center; font-size:11px; color:var(--ink-soft); margin: 26px 0 6px; }
+
+  /* ---------- PIN Lock ---------- */
+  #pinLock{
+    position:fixed; inset:0; z-index:999; background: var(--chili);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding: max(48px, calc(20px + env(safe-area-inset-top))) 20px calc(20px + env(safe-area-inset-bottom));
+    color:#fff;
+  }
+  #pinLock .lock-emoji{ font-size:46px; margin-bottom:6px; }
+  #pinLock h2{ font-family:'Kanit'; font-weight:700; font-size:17px; margin:0 0 18px; }
+  .pin-dots{ display:flex; gap:16px; margin-bottom:22px; }
+  .pin-dot{
+    width:18px; height:18px; border-radius:50%; border:2px solid #fff; background:transparent; transition:0.15s;
+  }
+  .pin-dot.filled{ background:#fff; }
+  .pin-dot.error{ border-color:#ffb3a7; background:#ffb3a7; }
+  .pin-pad{ display:grid; grid-template-columns: repeat(3, 64px); gap:12px; }
+  .pin-key{
+    width:64px; height:64px; border-radius:50%; border:none; background: rgba(255,255,255,0.16); color:#fff;
+    font-family:'Kanit'; font-weight:700; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  }
+  .pin-key:active{ background: rgba(255,255,255,0.32); }
+  .pin-key.ghost{ background:transparent; cursor:default; }
+  #pinLock.shake .pin-dots{ animation: pinshake 0.35s; }
+  @keyframes pinshake{
+    0%,100%{ transform:translateX(0); } 20%{ transform:translateX(-8px); } 40%{ transform:translateX(8px); }
+    60%{ transform:translateX(-8px); } 80%{ transform:translateX(8px); }
+  }
+</style>
+</head>
+<body>
+
+<div id="pinLock">
+  <div class="lock-emoji">🔒</div>
+  <h2>ใส่รหัส 4 หลักเพื่อเข้าใช้งาน</h2>
+  <div class="pin-dots" id="pinDots">
+    <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+  </div>
+  <div class="pin-pad" id="pinPad">
+    <button class="pin-key" data-num="1">1</button>
+    <button class="pin-key" data-num="2">2</button>
+    <button class="pin-key" data-num="3">3</button>
+    <button class="pin-key" data-num="4">4</button>
+    <button class="pin-key" data-num="5">5</button>
+    <button class="pin-key" data-num="6">6</button>
+    <button class="pin-key" data-num="7">7</button>
+    <button class="pin-key" data-num="8">8</button>
+    <button class="pin-key" data-num="9">9</button>
+    <button class="pin-key ghost"></button>
+    <button class="pin-key" data-num="0">0</button>
+    <button class="pin-key" data-act="del">⌫</button>
+  </div>
+</div>
+
+<header>
+  <div class="header-row">
+    <svg class="pig-badge" viewBox="0 0 100 100" id="pigBadge"></svg>
+    <div>
+      <p class="shop-name">ปากหม้อตลาดแลงบ้านดุง</p>
+      <p class="shop-sub">ระบบคิว 🐷 เชฟหมูใจดี</p>
+    </div>
+  </div>
+  <div class="mascot-line" id="mascotLine">🐷 พร้อมทำปากหม้อร้อนๆ แล้วจ้า</div>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="queue">🧾 คิว</button>
+    <button class="tab-btn" data-tab="history">📖 ประวัติ</button>
+    <button class="tab-btn" data-tab="settings">⚙️ เมนู</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ QUEUE TAB ============ -->
+  <section id="tab-queue">
+    <div class="section-title">🍲 สั่งเมนู แตะเพื่อเพิ่ม</div>
+    <div class="menu-grid" id="menuGrid"></div>
+
+    <div class="draft-wrap">
+      <div class="ticket">
+        <input type="text" class="note-input" id="noteInput" placeholder="โน้ตลูกค้า เช่น เสื้อแดง / มอไซค์ดำ (ใส่หรือไม่ก็ได้)">
+        <div class="tear"></div>
+        <div id="draftLines"><div class="draft-empty">ยังไม่ได้เลือกเมนู แตะปุ่มด้านบนได้เลยจ้า</div></div>
+        <div class="draft-total">
+          <span class="lbl">ยอดรวม</span>
+          <span class="amt" id="draftTotal">0 ฿</span>
+        </div>
+        <button class="confirm-btn" id="confirmBtn" disabled>➕ เพิ่มเข้าคิว</button>
+      </div>
+    </div>
+
+    <div class="section-title">📋 คิวที่รอ <span class="count-pill" id="queueCount">0</span></div>
+    <div id="queueList"></div>
+  </section>
+
+  <!-- ============ HISTORY TAB ============ -->
+  <section id="tab-history" style="display:none;">
+    <div class="history-summary">
+      <div class="hs-block">
+        <div class="hs-label">ยอดขายวันนี้</div>
+        <div class="hs-value" id="todaySales">0 ฿</div>
+      </div>
+      <div class="hs-block">
+        <div class="hs-label">ออเดอร์วันนี้</div>
+        <div class="hs-value" id="todayCount">0</div>
+      </div>
+    </div>
+    <div id="historyList"></div>
+  </section>
+
+  <!-- ============ SETTINGS TAB ============ -->
+  <section id="tab-settings" style="display:none;">
+    <div class="section-title">⚙️ เปิด/ปิดเมนูวันนี้</div>
+    <div class="settings-card" id="settingsList"></div>
+    <p class="footnote">ปิดเมนูที่วันนี้วัตถุดิบหมด เมนูนั้นจะกดสั่งไม่ได้ชั่วคราว</p>
+  </section>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------------- Data ---------------- */
+const PAKMOR = { key:'pakmor', name:'ปากหม้อ', price:40, emoji:'🥟' };
+const MENU = [
+  { key:'yum_pladuk', name:'ยำปลาดุกฟู', price:60, emoji:'🐟' },
+  { key:'yum_huapee', name:'ยำหัวปลี', price:60, emoji:'🌸' },
+  { key:'kuaytiew_lod', name:'ก๋วยเตี๋ยวหลอด', price:40, emoji:'🍜' },
+  { key:'miang_sod', name:'เมี่ยงสด', price:40, emoji:'🥬' },
+  { key:'miang_platoo', name:'เมี่ยงปลาทู', price:50, emoji:'🐠' },
+  { key:'mee_kati', name:'หมี่กะทิ', price:40, emoji:'🍲' },
+  { key:'namprik_kakmoo', name:'น้ำพริกกากหมู', price:35, bundle:{qty:3, price:100}, emoji:'🌶️' },
+];
+const ALL_ITEMS = [PAKMOR, ...MENU];
+
+function priceFor(itemKey, qty){
+  const item = ALL_ITEMS.find(i => i.key === itemKey);
+  if(!item || qty <= 0) return 0;
+  if(item.bundle){
+    const bundles = Math.floor(qty / item.bundle.qty);
+    const remainder = qty % item.bundle.qty;
+    return bundles * item.bundle.price + remainder * item.price;
+  }
+  return item.price * qty;
+}
+function todayStr(){
+  const d = new Date();
+  const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,'0'), day = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+function todayLabelTH(dateStr){
+  const [y,m,d] = dateStr.split('-').map(Number);
+  const months = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  return `${d} ${months[m-1]} ${y+543}`;
+}
+
+/* ---------------- State ---------------- */
+let state = {
+  dailyCounter: { date: todayStr(), count: 0 },
+  queue: [],
+  history: [],
+  menuAvailability: {},
+};
+let draft = { note:'', items:{} }; // items: { key: qty }
+const STORAGE_KEY = 'podb-app-state-v1';
+
+async function loadState(){
+  try{
+    const res = await window.storage.get(STORAGE_KEY, false);
+    if(res && res.value){
+      const loaded = JSON.parse(res.value);
+      state = Object.assign(state, loaded);
+    }
+  }catch(e){
+    // no saved state yet, use defaults
+  }
+  // reset daily counter if the day changed
+  if(state.dailyCounter.date !== todayStr()){
+    state.dailyCounter = { date: todayStr(), count: 0 };
+    await saveState();
+  }
+  MENU.forEach(m => { if(!(m.key in state.menuAvailability)) state.menuAvailability[m.key] = true; });
+  renderAll();
+}
+
+let saving = false;
+async function saveState(){
+  try{
+    await window.storage.set(STORAGE_KEY, JSON.stringify(state), false);
+  }catch(e){
+    showToast('⚠️ บันทึกไม่สำเร็จ ลองใหม่อีกครั้ง');
+  }
+}
+
+/* ---------------- Rendering ---------------- */
+function renderAll(){
+  renderMenuGrid();
+  renderDraft();
+  renderQueue();
+  renderHistory();
+  renderSettings();
+  renderMascot();
+}
+
+function renderMenuGrid(){
+  const grid = document.getElementById('menuGrid');
+  grid.innerHTML = '';
+
+  const mainQty = draft.items[PAKMOR.key] || 0;
+  const mainCard = document.createElement('div');
+  mainCard.className = 'menu-card main';
+  mainCard.innerHTML = `
+    <div>
+      <div class="m-name">${PAKMOR.emoji} ${PAKMOR.name}</div>
+      <div class="m-price">${PAKMOR.price} ฿ / กล่อง</div>
+    </div>
+    <div class="qty-row">
+      <button class="qty-btn minus" data-act="dec" data-key="${PAKMOR.key}">−</button>
+      <span class="qty-num">${mainQty}</span>
+      <button class="qty-btn" data-act="inc" data-key="${PAKMOR.key}">+</button>
+    </div>
+  `;
+  grid.appendChild(mainCard);
+
+  MENU.forEach(item => {
+    const available = state.menuAvailability[item.key];
+    const qty = draft.items[item.key] || 0;
+    const card = document.createElement('div');
+    card.className = 'menu-card' + (available ? '' : ' off');
+    card.innerHTML = `
+      ${!available ? '<div class="sold-out-tag">วันนี้หมด</div>' : ''}
+      <div class="emoji">${item.emoji}</div>
+      <div class="m-name">${item.name}</div>
+      <div class="m-price">${item.bundle ? `${item.price}฿/ชิ้น (${item.bundle.qty} ชิ้น ${item.bundle.price}฿)` : item.price + ' ฿'}</div>
+      <div class="qty-row">
+        <button class="qty-btn minus" data-act="dec" data-key="${item.key}" ${!available?'disabled':''}>−</button>
+        <span class="qty-num">${qty}</span>
+        <button class="qty-btn" data-act="inc" data-key="${item.key}" ${!available?'disabled':''}>+</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  grid.querySelectorAll('button[data-act]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.key;
+      const available = key === PAKMOR.key ? true : state.menuAvailability[key];
+      if(!available) return;
+      const cur = draft.items[key] || 0;
+      if(btn.dataset.act === 'inc') draft.items[key] = cur + 1;
+      else draft.items[key] = Math.max(0, cur - 1);
+      renderMenuGrid();
+      renderDraft();
+    });
+  });
+}
+
+function draftItemsArray(){
+  return Object.entries(draft.items)
+    .filter(([k,q]) => q > 0)
+    .map(([key, qty]) => {
+      const item = ALL_ITEMS.find(i => i.key === key);
+      return { key, name: item.name, emoji: item.emoji, qty, isAddon: key !== PAKMOR.key, lineTotal: priceFor(key, qty) };
+    });
+}
+
+function renderDraft(){
+  const lines = draftItemsArray();
+  const wrap = document.getElementById('draftLines');
+  const totalEl = document.getElementById('draftTotal');
+  const confirmBtn = document.getElementById('confirmBtn');
+
+  if(lines.length === 0){
+    wrap.innerHTML = '<div class="draft-empty">ยังไม่ได้เลือกเมนู แตะปุ่มด้านบนได้เลยจ้า</div>';
+  } else {
+    wrap.innerHTML = lines.map(l => `
+      <div class="draft-line">
+        <span class="dl-name">${l.emoji} ${l.name} × ${l.qty} ${l.isAddon ? '<span class="addon-tag">หยิบด้วย</span>' : ''}</span>
+        <span>${l.lineTotal} ฿</span>
+      </div>
+    `).join('');
+  }
+  const total = lines.reduce((s,l) => s + l.lineTotal, 0);
+  totalEl.textContent = total + ' ฿';
+  confirmBtn.disabled = lines.length === 0;
+}
+
+document.getElementById('noteInput').addEventListener('input', (e) => { draft.note = e.target.value; });
+
+document.getElementById('confirmBtn').addEventListener('click', async () => {
+  const lines = draftItemsArray();
+  if(lines.length === 0) return;
+  if(state.dailyCounter.date !== todayStr()){
+    state.dailyCounter = { date: todayStr(), count: 0 };
+  }
+  state.dailyCounter.count += 1;
+  const order = {
+    id: 'o_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
+    queueNo: state.dailyCounter.count,
+    date: todayStr(),
+    note: draft.note.trim(),
+    items: lines.map(l => ({ name: l.name, emoji: l.emoji, qty: l.qty, isAddon: l.isAddon, lineTotal: l.lineTotal })),
+    total: lines.reduce((s,l) => s + l.lineTotal, 0),
+    paid: false,
+    createdAt: Date.now(),
+  };
+  state.queue.push(order);
+  draft = { note:'', items:{} };
+  document.getElementById('noteInput').value = '';
+  await saveState();
+  renderAll();
+  showToast(`✅ เพิ่มคิว #${order.queueNo} แล้ว`);
+});
+
+function renderQueue(){
+  const list = document.getElementById('queueList');
+  document.getElementById('queueCount').textContent = state.queue.length;
+  if(state.queue.length === 0){
+    list.innerHTML = `<div class="empty-state"><span class="big-emoji">🐷💤</span>ยังไม่มีคิวรอ เชฟหมูพักก่อนน้า</div>`;
+    return;
+  }
+  const sorted = [...state.queue].sort((a,b) => a.queueNo - b.queueNo);
+  list.innerHTML = sorted.map(o => `
+    <div class="queue-card ${o.paid ? 'paid' : ''}">
+      <div class="qc-top">
+        <div>
+          <div class="qc-num">คิว #${o.queueNo}</div>
+          ${o.note ? `<div class="qc-note">📝 ${escapeHtml(o.note)}</div>` : ''}
+        </div>
+      </div>
+      <div class="qc-items">
+        ${o.items.map(it => `
+          <div class="qc-item ${it.isAddon ? 'addon' : ''}">
+            ${it.emoji} ${it.name} × ${it.qty}
+            ${it.isAddon ? '<span class="basket">🧺 หยิบด้วย</span>' : ''}
+          </div>
+        `).join('')}
+      </div>
+      <div class="qc-bottom">
+        <span class="qc-total">${o.total} ฿</span>
+        <button class="pay-chip ${o.paid ? 'paid' : 'unpaid'}" data-act="pay" data-id="${o.id}">
+          ${o.paid ? '✅ จ่ายแล้ว' : '💸 ยังไม่จ่าย'}
+        </button>
+        <button class="done-btn" data-act="done" data-id="${o.id}">🎉 รับของแล้ว</button>
+      </div>
+    </div>
+  `).join('');
+
+  list.querySelectorAll('button[data-act="pay"]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const order = state.queue.find(o => o.id === btn.dataset.id);
+      if(order){ order.paid = !order.paid; await saveState(); renderQueue(); }
+    });
+  });
+  list.querySelectorAll('button[data-act="done"]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const idx = state.queue.findIndex(o => o.id === btn.dataset.id);
+      if(idx > -1){
+        const [order] = state.queue.splice(idx, 1);
+        order.completedAt = Date.now();
+        state.history.unshift(order);
+        await saveState();
+        renderAll();
+        showToast(`🎉 คิว #${order.queueNo} รับของแล้ว`);
+      }
+    });
+  });
+}
+
+function renderHistory(){
+  const today = todayStr();
+  const todays = state.history.filter(o => o.date === today);
+  const todaySales = todays.reduce((s,o) => s + o.total, 0);
+  document.getElementById('todaySales').textContent = todaySales + ' ฿';
+  document.getElementById('todayCount').textContent = todays.length;
+
+  const listEl = document.getElementById('historyList');
+  if(state.history.length === 0){
+    listEl.innerHTML = `<div class="empty-state"><span class="big-emoji">📖</span>ยังไม่มีประวัติการขาย</div>`;
+    return;
+  }
+  const groups = {};
+  state.history.forEach(o => { (groups[o.date] = groups[o.date] || []).push(o); });
+  const dates = Object.keys(groups).sort((a,b) => b.localeCompare(a));
+  listEl.innerHTML = dates.map(date => {
+    const orders = groups[date].sort((a,b) => b.queueNo - a.queueNo);
+    const daySales = orders.reduce((s,o)=>s+o.total,0);
+    return `
+      <div class="hist-date-header">📅 ${todayLabelTH(date)} — ${orders.length} ออเดอร์ · ${daySales} ฿</div>
+      ${orders.map(o => `
+        <div class="hist-card">
+          <div class="hist-top">
+            <span class="hist-num">คิว #${o.queueNo} ${o.note ? '· ' + escapeHtml(o.note) : ''}</span>
+            <span>${o.total} ฿ ${o.paid ? '✅' : '⚠️ไม่ได้จ่าย'}</span>
+          </div>
+          <div class="hist-items">${o.items.map(it => `${it.name}×${it.qty}`).join(', ')}</div>
+        </div>
+      `).join('')}
+    `;
+  }).join('');
+}
+
+function renderSettings(){
+  const wrap = document.getElementById('settingsList');
+  wrap.innerHTML = MENU.map(item => `
+    <div class="settings-row">
+      <div>
+        <div class="sr-name">${item.emoji} ${item.name}</div>
+        <div class="sr-price">${item.price} ฿${item.bundle ? ` (${item.bundle.qty} ชิ้น ${item.bundle.price}฿)` : ''}</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" data-key="${item.key}" ${state.menuAvailability[item.key] ? 'checked' : ''}>
+        <span class="slider"></span>
+      </label>
+    </div>
+  `).join('');
+  wrap.querySelectorAll('input[type=checkbox]').forEach(cb => {
+    cb.addEventListener('change', async () => {
+      state.menuAvailability[cb.dataset.key] = cb.checked;
+      if(!cb.checked && draft.items[cb.dataset.key]){ delete draft.items[cb.dataset.key]; renderMenuGrid(); renderDraft(); }
+      await saveState();
+      renderMenuGrid();
+    });
+  });
+}
+
+function renderMascot(){
+  const n = state.queue.length;
+  const line = document.getElementById('mascotLine');
+  if(n === 0) line.textContent = '🐷 พร้อมทำปากหม้อร้อนๆ แล้วจ้า';
+  else if(n <= 3) line.textContent = `🐷 กำลังทำอยู่นะ มี ${n} คิวรอ`;
+  else if(n <= 7) line.textContent = `🐷💦 คิวเริ่มเยอะแล้ว (${n} คิว) สู้ๆ`;
+  else line.textContent = `🐷🔥 คิวแน่นมาก! (${n} คิว) ใจเย็นๆ ทำทีละคิวน้า`;
+  drawPig(n);
+}
+
+function drawPig(queueLen){
+  const svg = document.getElementById('pigBadge');
+  const sweat = queueLen > 7 ? `<circle cx="78" cy="30" r="4" fill="#BEE3F8"/><circle cx="83" cy="40" r="3" fill="#BEE3F8"/>` : '';
+  const mouth = queueLen > 7
+    ? `<path d="M40 66 Q50 60 60 66" stroke="#3B2A22" stroke-width="3" fill="none" stroke-linecap="round"/>`
+    : `<path d="M40 63 Q50 72 60 63" stroke="#3B2A22" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  svg.innerHTML = `
+    <circle cx="50" cy="52" r="34" fill="#F6B8B0"/>
+    <polygon points="26,34 14,10 40,26" fill="#EE968C"/>
+    <polygon points="74,34 86,10 60,26" fill="#EE968C"/>
+    <ellipse cx="50" cy="14" rx="26" ry="16" fill="#fff"/>
+    <ellipse cx="34" cy="2" rx="12" ry="16" fill="#fff"/>
+    <ellipse cx="66" cy="2" rx="12" ry="16" fill="#fff"/>
+    <rect x="26" y="22" width="48" height="10" fill="#fff"/>
+    <rect x="26" y="30" width="48" height="4" fill="#E3502A"/>
+    <path d="M30 44 Q37 36 44 44" stroke="#3B2A22" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <path d="M56 44 Q63 36 70 44" stroke="#3B2A22" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="50" cy="58" rx="15" ry="12" fill="#EE968C"/>
+    <ellipse cx="44" cy="58" rx="4" ry="5.5" fill="#96595A"/>
+    <ellipse cx="56" cy="58" rx="4" ry="5.5" fill="#96595A"/>
+    ${mouth}
+    ${sweat}
+  `;
+}
+
+function escapeHtml(str){
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+/* ---------------- Tabs ---------------- */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    ['queue','history','settings'].forEach(t => {
+      document.getElementById('tab-' + t).style.display = (t === btn.dataset.tab) ? '' : 'none';
+    });
+  });
+});
+
+/* ---------------- PIN Lock ---------------- */
+(function(){
+  const CORRECT_PIN = '2356';
+  let entered = '';
+  const dotsEl = document.getElementById('pinDots');
+  const lockEl = document.getElementById('pinLock');
+  const dots = () => dotsEl.querySelectorAll('.pin-dot');
+
+  function renderDots(errorState){
+    dots().forEach((d, i) => {
+      d.classList.toggle('filled', i < entered.length);
+      d.classList.toggle('error', !!errorState);
+    });
+  }
+
+  function tryUnlock(){
+    if(entered === CORRECT_PIN){
+      lockEl.style.display = 'none';
+    } else {
+      lockEl.classList.add('shake');
+      renderDots(true);
+      setTimeout(() => {
+        lockEl.classList.remove('shake');
+        entered = '';
+        renderDots(false);
+      }, 400);
+    }
+  }
+
+  document.getElementById('pinPad').addEventListener('click', (e) => {
+    const btn = e.target.closest('.pin-key');
+    if(!btn) return;
+    if(btn.dataset.act === 'del'){
+      entered = entered.slice(0, -1);
+      renderDots(false);
+      return;
+    }
+    if(btn.dataset.num === undefined) return;
+    if(entered.length >= 4) return;
+    entered += btn.dataset.num;
+    renderDots(false);
+    if(entered.length === 4){
+      setTimeout(tryUnlock, 120);
+    }
+  });
+})();
+
+/* ---------------- Init ---------------- */
+loadState();
+</script>
+</body>
+</html>
