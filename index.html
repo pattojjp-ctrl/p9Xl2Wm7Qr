@@ -159,7 +159,7 @@
   }
   .pickup-btn{
     border:none; border-radius:999px; padding:7px 14px; font-family:'Kanit'; font-weight:700; font-size:12.5px; cursor:pointer;
-    background: var(--herb); color:#fff;
+    background: var(--turmeric-dark); color:#fff;
   }
   .qc-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
   .qc-num{ font-family:'Kanit'; font-weight:800; font-size:20px; color:var(--chili-dark); }
@@ -679,7 +679,7 @@ function renderQueue(){
           <button class="pay-chip ${o.paid ? 'paid' : 'unpaid'}" data-act="pay" data-id="${o.id}">
             ${o.paid ? '✅ จ่ายแล้ว' : '💸 ยังไม่จ่าย'}
           </button>
-          <button class="pickup-btn" data-act="done" data-id="${o.id}">✅ ลูกค้ารับแล้ว</button>
+          <button class="pickup-btn" data-act="done" data-id="${o.id}">✅ รอลูกค้ารับ </button>
         </div>
       </div>
     `;
