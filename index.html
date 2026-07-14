@@ -135,6 +135,32 @@
     border-left: 6px solid var(--chili);
   }
   .queue-card.paid{ border-left-color: var(--herb); }
+  .queue-columns{ display:grid; grid-template-columns: 1fr 1fr; gap:9px; align-items:start; }
+  .queue-col{ min-width:0; }
+  .queue-col .section-title{ margin: 18px 2px 8px; font-size:13.5px; }
+  .queue-col .queue-card{ padding:10px 10px; margin-bottom:8px; }
+  .queue-col .qc-num{ font-size:16px; }
+  .queue-col .qc-note{ font-size:11px; }
+  .queue-col .qc-item{ font-size:12px; }
+  .queue-col .qc-total{ font-size:15px; }
+  .queue-col .qc-wait{ font-size:10.5px; }
+  .queue-col .qc-bottom{ flex-direction:column; align-items:stretch; gap:6px; }
+  .queue-col .pay-chip, .queue-col .ready-btn, .queue-col .pickup-btn, .queue-col .done-btn{
+    width:100%; text-align:center; font-size:11.5px; padding:7px 8px;
+  }
+  .queue-col .empty-state{ padding: 18px 6px; font-size:12.5px; }
+  .queue-col .empty-state .big-emoji{ font-size:28px; }
+  .queue-card.ready{ border-left-color: var(--turmeric-dark); background: linear-gradient(180deg, #FFF8EA, var(--paper) 40%); }
+  .qc-wait{ font-size:11.5px; font-family:'Kanit'; font-weight:600; color: var(--turmeric-dark); margin-top:2px; }
+  .qc-wait.long{ color: var(--chili-dark); }
+  .ready-btn{
+    border:none; border-radius:999px; padding:7px 14px; font-family:'Kanit'; font-weight:700; font-size:12.5px; cursor:pointer;
+    background: var(--turmeric-dark); color:#fff;
+  }
+  .pickup-btn{
+    border:none; border-radius:999px; padding:7px 14px; font-family:'Kanit'; font-weight:700; font-size:12.5px; cursor:pointer;
+    background: var(--herb); color:#fff;
+  }
   .qc-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
   .qc-num{ font-family:'Kanit'; font-weight:800; font-size:20px; color:var(--chili-dark); }
   .qc-note{ font-size:12.5px; color:var(--ink-soft); margin-top:1px; }
@@ -204,17 +230,17 @@
   .delete-history-btn{
     width:100%;
     margin-bottom:12px;
-    padding:12px;
-    border:none;
+    padding:11px;
+    border:1.5px solid var(--chili);
     border-radius:12px;
-    background:#E3502A;
-    color:#fff;
+    background:#FDEDE8;
+    color:var(--chili-dark);
     font-family:'Kanit';
     font-weight:700;
-    font-size:15px;
+    font-size:14px;
     cursor:pointer;
-    box-shadow:0 4px 10px rgba(0,0,0,0.15);
   }
+  .delete-history-btn:active{ background:#FBDCD3; }
   .toast{
     position:fixed; left:50%; bottom:22px; transform: translateX(-50%) translateY(20px); opacity:0;
     background: var(--ink); color:#fff; padding:10px 18px; border-radius:999px; font-family:'Kanit'; font-weight:600; font-size:13.5px;
@@ -223,6 +249,24 @@
   .toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
 
   .footnote{ text-align:center; font-size:11px; color:var(--ink-soft); margin: 26px 0 6px; }
+
+  /* ---------- Confirm modal (replaces native confirm(), unreliable in standalone PWA) ---------- */
+  .confirm-overlay{
+    position:fixed; inset:0; z-index:900; background: rgba(46,32,19,0.45);
+    display:none; align-items:center; justify-content:center; padding:24px;
+  }
+  .confirm-overlay.show{ display:flex; }
+  .confirm-card{
+    background: var(--paper); border-radius:16px; box-shadow: var(--shadow);
+    padding:20px 18px; max-width:320px; width:100%; text-align:center;
+  }
+  .confirm-msg{ font-family:'Kanit'; font-weight:600; font-size:15px; color:var(--ink); margin-bottom:16px; }
+  .confirm-btns{ display:flex; gap:10px; }
+  .confirm-cancel, .confirm-ok{
+    flex:1; border:none; border-radius:12px; padding:11px; font-family:'Kanit'; font-weight:700; font-size:14px; cursor:pointer;
+  }
+  .confirm-cancel{ background:#E9DFCF; color:var(--ink); }
+  .confirm-ok{ background: var(--chili); color:#fff; }
 
   /* ---------- PIN Lock ---------- */
   #pinLock{
@@ -282,7 +326,7 @@
     <svg class="pig-badge" viewBox="0 0 100 100" id="pigBadge"></svg>
     <div>
       <p class="shop-name">ปากหม้อตลาดแลงบ้านดุง</p>
-      <p class="shop-sub">ระบบคิว 🐷 เชฟหมูใจดี</p>
+      <p class="shop-sub">ระบบคิว 🐷 เชฟหมูอ้วนใจดี</p>
     </div>
   </div>
   <div class="mascot-line" id="mascotLine">🐷 พร้อมทำปากหม้อร้อนๆ แล้วจ้า</div>
@@ -313,8 +357,16 @@
       </div>
     </div>
 
-    <div class="section-title">📋 คิวที่รอ <span class="count-pill" id="queueCount">0</span></div>
-    <div id="queueList"></div>
+    <div class="queue-columns">
+      <div class="queue-col">
+        <div class="section-title">📋 กำลังทำ <span class="count-pill" id="queueCount">0</span></div>
+        <div id="queueList"></div>
+      </div>
+      <div class="queue-col">
+        <div class="section-title">🔔 รอรับ <span class="count-pill" id="readyCount">0</span></div>
+        <div id="readyList"></div>
+      </div>
+    </div>
   </section>
 
   <!-- ============ HISTORY TAB ============ -->
@@ -345,6 +397,16 @@
 </main>
 
 <div class="toast" id="toast"></div>
+
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-card">
+    <div class="confirm-msg" id="confirmMsg">🗑️ ต้องการล้างประวัติทั้งหมดไหม?</div>
+    <div class="confirm-btns">
+      <button class="confirm-cancel" id="confirmCancelBtn">ยกเลิก</button>
+      <button class="confirm-ok" id="confirmOkBtn">ล้างเลย</button>
+    </div>
+  </div>
+</div>
 
 <script>
 /* ---------------- Data ---------------- */
@@ -529,6 +591,8 @@ document.getElementById('confirmBtn').addEventListener('click', async () => {
     items: lines.map(l => ({ name: l.name, emoji: l.emoji, qty: l.qty, isAddon: l.isAddon, lineTotal: l.lineTotal })),
     total: lines.reduce((s,l) => s + l.lineTotal, 0),
     paid: false,
+    status: 'cooking',
+    readyAt: null,
     createdAt: Date.now(),
   };
   state.queue.push(order);
@@ -539,47 +603,109 @@ document.getElementById('confirmBtn').addEventListener('click', async () => {
   showToast(`✅ เพิ่มคิว #${order.queueNo} แล้ว`);
 });
 
+function waitLabel(readyAt){
+  const mins = Math.floor((Date.now() - readyAt) / 60000);
+  if(mins <= 0) return { text: '🔔 เพิ่งเสร็จ', long: false };
+  if(mins < 60) return { text: `⏱️ รอมาแล้ว ${mins} นาที`, long: mins >= 15 };
+  const hrs = Math.floor(mins / 60), rem = mins % 60;
+  return { text: `⏱️ รอมาแล้ว ${hrs} ชม. ${rem} นาที`, long: true };
+}
+
 function renderQueue(){
+  const cooking = state.queue.filter(o => o.status !== 'ready');
+  const ready = state.queue.filter(o => o.status === 'ready');
+
   const list = document.getElementById('queueList');
-  document.getElementById('queueCount').textContent = state.queue.length;
-  if(state.queue.length === 0){
-    list.innerHTML = `<div class="empty-state"><span class="big-emoji">🐷💤</span>ยังไม่มีคิวรอ เชฟหมูพักก่อนน้า</div>`;
-    return;
-  }
-  const sorted = [...state.queue].sort((a,b) => a.queueNo - b.queueNo);
-  list.innerHTML = sorted.map(o => `
-    <div class="queue-card ${o.paid ? 'paid' : ''}">
-      <div class="qc-top">
-        <div>
-          <div class="qc-num">คิว #${o.queueNo}</div>
-          ${o.note ? `<div class="qc-note">📝 ${escapeHtml(o.note)}</div>` : ''}
+  document.getElementById('queueCount').textContent = cooking.length;
+  if(cooking.length === 0){
+    list.innerHTML = `<div class="empty-state"><span class="big-emoji">🐷💤</span>ยังไม่มีคิวรอ เชฟหมูอ้วนพักก่อนน้า</div>`;
+  } else {
+    const sorted = [...cooking].sort((a,b) => a.queueNo - b.queueNo);
+    list.innerHTML = sorted.map(o => `
+      <div class="queue-card ${o.paid ? 'paid' : ''}">
+        <div class="qc-top">
+          <div>
+            <div class="qc-num">คิว #${o.queueNo}</div>
+            ${o.note ? `<div class="qc-note">📝 ${escapeHtml(o.note)}</div>` : ''}
+          </div>
+        </div>
+        <div class="qc-items">
+          ${o.items.map(it => `
+            <div class="qc-item ${it.isAddon ? 'addon' : ''}">
+              ${it.emoji} ${it.name} × ${it.qty}
+              ${it.isAddon ? '<span class="basket">🧺 หยิบด้วย</span>' : ''}
+            </div>
+          `).join('')}
+        </div>
+        <div class="qc-bottom">
+          <span class="qc-total">${o.total} ฿</span>
+          <button class="pay-chip ${o.paid ? 'paid' : 'unpaid'}" data-act="pay" data-id="${o.id}">
+            ${o.paid ? '✅ จ่ายแล้ว' : '💸 ยังไม่จ่าย'}
+          </button>
+          <button class="ready-btn" data-act="ready" data-id="${o.id}">🍳 ทำเสร็จแล้ว</button>
         </div>
       </div>
-      <div class="qc-items">
-        ${o.items.map(it => `
-          <div class="qc-item ${it.isAddon ? 'addon' : ''}">
-            ${it.emoji} ${it.name} × ${it.qty}
-            ${it.isAddon ? '<span class="basket">🧺 หยิบด้วย</span>' : ''}
-          </div>
-        `).join('')}
-      </div>
-      <div class="qc-bottom">
-        <span class="qc-total">${o.total} ฿</span>
-        <button class="pay-chip ${o.paid ? 'paid' : 'unpaid'}" data-act="pay" data-id="${o.id}">
-          ${o.paid ? '✅ จ่ายแล้ว' : '💸 ยังไม่จ่าย'}
-        </button>
-        <button class="done-btn" data-act="done" data-id="${o.id}">🎉 รับของแล้ว</button>
-      </div>
-    </div>
-  `).join('');
+    `).join('');
+  }
 
-  list.querySelectorAll('button[data-act="pay"]').forEach(btn => {
+  const readyCountEl = document.getElementById('readyCount');
+  const readyList = document.getElementById('readyList');
+  readyCountEl.textContent = ready.length;
+  if(ready.length === 0){
+    readyList.innerHTML = `<div class="empty-state"><span class="big-emoji">🔔</span>ยังไม่มีคิวรอรับ</div>`;
+  } else {
+    const sortedReady = [...ready].sort((a,b) => a.readyAt - b.readyAt);
+    readyList.innerHTML = sortedReady.map(o => {
+      const w = waitLabel(o.readyAt);
+      return `
+      <div class="queue-card ready ${o.paid ? 'paid' : ''}">
+        <div class="qc-top">
+          <div>
+            <div class="qc-num">คิว #${o.queueNo}</div>
+            ${o.note ? `<div class="qc-note">📝 ${escapeHtml(o.note)}</div>` : ''}
+            <div class="qc-wait ${w.long ? 'long' : ''}">${w.text}</div>
+          </div>
+        </div>
+        <div class="qc-items">
+          ${o.items.map(it => `
+            <div class="qc-item ${it.isAddon ? 'addon' : ''}">
+              ${it.emoji} ${it.name} × ${it.qty}
+              ${it.isAddon ? '<span class="basket">🧺 หยิบด้วย</span>' : ''}
+            </div>
+          `).join('')}
+        </div>
+        <div class="qc-bottom">
+          <span class="qc-total">${o.total} ฿</span>
+          <button class="pay-chip ${o.paid ? 'paid' : 'unpaid'}" data-act="pay" data-id="${o.id}">
+            ${o.paid ? '✅ จ่ายแล้ว' : '💸 ยังไม่จ่าย'}
+          </button>
+          <button class="pickup-btn" data-act="done" data-id="${o.id}">✅ ลูกค้ารับแล้ว</button>
+        </div>
+      </div>
+    `;
+    }).join('');
+  }
+
+  document.querySelectorAll('button[data-act="pay"]').forEach(btn => {
     btn.addEventListener('click', async () => {
       const order = state.queue.find(o => o.id === btn.dataset.id);
       if(order){ order.paid = !order.paid; await saveState(); renderQueue(); }
     });
   });
-  list.querySelectorAll('button[data-act="done"]').forEach(btn => {
+  document.querySelectorAll('button[data-act="ready"]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const order = state.queue.find(o => o.id === btn.dataset.id);
+      if(order){
+        order.status = 'ready';
+        order.readyAt = Date.now();
+        await saveState();
+        renderQueue();
+        renderMascot();
+        showToast(`🍳 คิว #${order.queueNo} ทำเสร็จแล้ว รอลูกค้ามารับ`);
+      }
+    });
+  });
+  document.querySelectorAll('button[data-act="done"]').forEach(btn => {
     btn.addEventListener('click', async () => {
       const idx = state.queue.findIndex(o => o.id === btn.dataset.id);
       if(idx > -1){
@@ -593,6 +719,10 @@ function renderQueue(){
     });
   });
 }
+
+setInterval(() => {
+  if(state.queue.some(o => o.status === 'ready')) renderQueue();
+}, 30000);
 
 function renderHistory(){
   const today = todayStr();
@@ -652,7 +782,7 @@ function renderSettings(){
 }
 
 function renderMascot(){
-  const n = state.queue.length;
+  const n = state.queue.filter(o => o.status !== 'ready').length;
   const line = document.getElementById('mascotLine');
   if(n === 0) line.textContent = '🐷 พร้อมทำปากหม้อร้อนๆ แล้วจ้า';
   else if(n <= 3) line.textContent = `🐷 กำลังทำอยู่นะ มี ${n} คิวรอ`;
@@ -708,7 +838,7 @@ function showToast(msg){
     return;
   }
 
-  const ok = confirm('🗑️ ต้องการล้างประวัติทั้งหมดไหม?');
+  const ok = await showConfirm('🗑️ ต้องการล้างประวัติทั้งหมดไหม?');
 
   if(!ok) return;
 
@@ -720,6 +850,29 @@ function showToast(msg){
 
   showToast('✅ ล้างประวัติแล้ว');
 });
+
+function showConfirm(msg){
+  return new Promise((resolve) => {
+    const overlay = document.getElementById('confirmOverlay');
+    document.getElementById('confirmMsg').textContent = msg;
+    overlay.classList.add('show');
+
+    const cancelBtn = document.getElementById('confirmCancelBtn');
+    const okBtn = document.getElementById('confirmOkBtn');
+
+    function cleanup(result){
+      overlay.classList.remove('show');
+      cancelBtn.removeEventListener('click', onCancel);
+      okBtn.removeEventListener('click', onOk);
+      resolve(result);
+    }
+    function onCancel(){ cleanup(false); }
+    function onOk(){ cleanup(true); }
+
+    cancelBtn.addEventListener('click', onCancel);
+    okBtn.addEventListener('click', onOk);
+  });
+}
 
 
 /* ---------------- Tabs ---------------- */
